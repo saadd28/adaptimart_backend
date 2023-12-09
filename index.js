@@ -15,6 +15,7 @@ app.use("/api/user", userRoute)
 app.use("/api/product", productRoute)
 app.use("/api/category", categoryRoute)
 
+
 app.use(express.static("./upload"));
 app.use(express.static("./upload_category"));
 

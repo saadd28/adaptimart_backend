@@ -99,90 +99,80 @@ module.exports = {
     );
   },
 
-//   updateCategory: (model, file, callBack) => {
-//     const currentDate = new Date();
-//     const formattedDate = currentDate
-//       .toISOString()
-//       .slice(0, 19)
-//       .replace("T", " ");
+  updateCategory: (model, file, callBack) => {
+    const currentDate = new Date();
+    const formattedDate = currentDate
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
 
-//     // console.log("file", file);
+    // console.log("file", file);
 
-//     if (file == null) {
-//       // No new image provided, update the category information only
-//       console.log("file", file);
-//       pool.query(
-//         "UPDATE `category` SET `parent_id` = ?, `name` = ?, `price` = ?, `discount` = ?, `category` = ?, `sub_category` = ?, `stock` = ?, `created_on` = ? WHERE id = ?",
-//         [
-//           model.name,
-//           model.description,
-//           model.price,
-//           model.discount,
-//           model.category,
-//           model.sub_category,
-//           10,
-//           formattedDate,
-//           model.id,
-//         ],
-//         (error, results) => {
-//           if (error) {
-//             return callBack(error);
-//           }
-//           return callBack(null, results);
-//         }
-//       );
-//     } else {
-//       // New image provided, update the category information and delete the old image
-//       pool.query(
-//         "SELECT image FROM `category` WHERE id = ?",
-//         [model.id],
-//         (error, results) => {
-//           if (error) {
-//             return callBack(error);
-//           }
+    if (file == null) {
+      // No new image provided, update the category information only
+      console.log("file", file);
+      pool.query(
+        "UPDATE `category` SET `name` = ?, `action_type`=?,  `edited_on` = ? WHERE id = ?",
+        [
+          model.name,
+          2,
+          formattedDate,
+          model.id,
+        ],
+        (error, results) => {
+          if (error) {
+            return callBack(error);
+          }
+          return callBack(null, results);
+        }
+      );
+    } else {
+      // New image provided, update the category information and delete the old image
+      pool.query(
+        "SELECT image FROM `category` WHERE id = ?",
+        [model.id],
+        (error, results) => {
+          if (error) {
+            return callBack(error);
+          }
 
-//           const imageFileName = results[0].image; // Assuming there's only one result
+          const imageFileName = results[0].image; // Assuming there's only one result
 
-//           const scriptDir = __dirname;
+          const scriptDir = __dirname;
 
-//           // Use '..' to navigate up one directory to the root directory
-//           const uploadDir = path.join(scriptDir, "..", "upload");
+          // Use '..' to navigate up one directory to the root directory
+          const uploadDir = path.join(scriptDir, "..", "upload_category");
 
-//           // Now, you can access files in the "upload" directory
-//           const imagePath = path.join(uploadDir, imageFileName);
+          // Now, you can access files in the "upload" directory
+          const imagePath = path.join(uploadDir, imageFileName);
 
-//           fs.unlink(imagePath, (unlinkError) => {
-//             if (unlinkError) {
-//               return callBack(unlinkError);
-//             }
+          fs.unlink(imagePath, (unlinkError) => {
+            if (unlinkError) {
+              return callBack(unlinkError);
+            }
 
-//             // After the image is deleted, update the category information
-//             pool.query(
-//               "UPDATE `category` SET `parent_id` = ?, `description` = ?, `image` = ?, `price` = ?, `discount` = ?, `category` = ?, `sub_category` = ?, `stock` = ?, `created_on` = ? WHERE id = ?",
-//               [
-//                 model.name,
-//                 model.description,
-//                 file.filename,
-//                 model.price,
-//                 model.discount,
-//                 model.category,
-//                 model.sub_category,
-//                 10,
-//                 formattedDate,
-//                 model.id,
-//               ],
-//               (error, results) => {
-//                 if (error) {
-//                   return callBack(error);
-//                 }
-//                 return callBack(null, results);
-//               }
-//             );
-//           });
-//         }
-//       );
-//     }
-//   },
+            // After the image is deleted, update the category information
+            pool.query(
+                "UPDATE `category` SET `name` = ?, `image`=?, `action_type`=?, `edited_on` = ? WHERE id = ?",
+                [
+                  model.name,
+                  file.filename,
+                  2,
+                  formattedDate,
+                  model.id,
+                ]                ,
+              (error, results) => {
+                if (error) {
+                  return callBack(error);
+                }
+                return callBack(null, results);
+              }
+            );
+          });
+        }
+      );
+    }
+  },
 
   getCategorysById: (model, callBack) => {
     pool.query(
