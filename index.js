@@ -11,11 +11,14 @@ const userRoute = require("./Routes/user.route")
 const productRoute = require("./Routes/product.route")
 const categoryRoute = require("./Routes/category.route")
 const supplierRoute = require("./Routes/supplier.route")
+const shipmentRoute = require("./Routes/shipment.route")
+
 
 app.use("/api/user", userRoute)
 app.use("/api/product", productRoute)
 app.use("/api/category", categoryRoute)
 app.use("/api/supplier", supplierRoute)
+app.use("/api/shipment", shipmentRoute)
 
 
 app.use(express.static("./upload"));

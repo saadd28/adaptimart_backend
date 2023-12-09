@@ -200,19 +200,3 @@ module.exports = {
   },
 };
 
-// CREATE TABLE `product` (
-//     `id` bigint PRIMARY KEY,
-//     `name` varchar(255),
-//     `image` varchar(255),
-//     `description` varchar(255),
-//     `discount` double,
-//     `price` double,
-//     `unit_price` double,
-//     `category_id` bigint,
-//     `category` varchar(255),
-//     `sub_category` varchar(255),
-//     `stock` int,
-//     `action_type` integer,
-//     `created_on` datetime,
-//     `edited_on` datetime
-//   );
