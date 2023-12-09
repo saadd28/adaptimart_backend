@@ -15,17 +15,16 @@ module.exports = {
     console.log("model:", model);
 
     pool.query(
-      "INSERT INTO `product` (`name`, `description`, `image`, `discount`, `price`, `created_on`, `category`, `sub_category`, `stock`)  VALUES (?,?,?,?,?,?,?,?,?)",
+      "INSERT INTO `product` (`name`, `desc`, `image`, `overall_discount`, `item_discount`, `price`, `created_on`, `category_id`)  VALUES (?,?,?,?,?,?,?,?)",
       [
         model.name,
         model.description,
         file.filename,
-        model.discount,
+        0,
+        0,
         model.price,
         formattedDate,
-        model.category,
-        model.sub_category,
-        10,
+        1,
       ],
       (error, results) => {
         if (error) {
