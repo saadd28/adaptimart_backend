@@ -59,7 +59,7 @@ module.exports = {
         const scriptDir = __dirname;
 
         // Use '..' to navigate up one directory to the root directory
-        const uploadDir = path.join(scriptDir, "..", "upload");
+        const uploadDir = path.join(scriptDir, "..", "upload_category");
 
         // Now, you can access files in the "upload" directory
         const imagePath = path.join(uploadDir, imageFileName);

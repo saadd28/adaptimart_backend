@@ -10,10 +10,12 @@ app.use(cors());
 const userRoute = require("./Routes/user.route")
 const productRoute = require("./Routes/product.route")
 const categoryRoute = require("./Routes/category.route")
+const supplierRoute = require("./Routes/supplier.route")
 
 app.use("/api/user", userRoute)
 app.use("/api/product", productRoute)
 app.use("/api/category", categoryRoute)
+app.use("/api/supplier", supplierRoute)
 
 
 app.use(express.static("./upload"));
