@@ -4,7 +4,7 @@ const supplierService = require("../Services/supplier.service");
 
 module.exports = {
   postSupplier: (req, res) => {
-    supplierService.postSupplier(req.body, req.file, (error, result) => {
+    supplierService.postSupplier(req.body, (error, result) => {
       if (result) return res.status(200).send(result);
       else return res.status(500).send(error);
     });
@@ -34,7 +34,8 @@ module.exports = {
   },
 
   updateSupplier: (req, res) => {
-    supplierService.updateSupplier(req.body, req.file, (error, result) => {
+    console.log("req", req.body)
+    supplierService.updateSupplier(req.body, (error, result) => {
       if (result) return res.status(200).send(result);
       else return res.status(500).send(error);
     });

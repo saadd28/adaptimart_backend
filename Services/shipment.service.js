@@ -4,7 +4,7 @@ const fs = require("fs");
 
 
 module.exports = {
-  postShipment: (model, file, callback) => {
+  postShipment: (model, callback) => {
     console.log("API CALLED");
 
     const currentDate = new Date();
@@ -101,7 +101,7 @@ getShipmentsById: (model, callBack) => {
     );
   },
 
-  updateShipment: (model, file, callback) => {
+  updateShipment: (model, callback) => {
     console.log("API CALLED");
 
     const currentDate = new Date();

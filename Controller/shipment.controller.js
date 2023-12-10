@@ -4,7 +4,7 @@ const shipmentService = require("../Services/shipment.service");
 
 module.exports = {
   postShipment: (req, res) => {
-    shipmentService.postShipment(req.body, req.file, (error, result) => {
+    shipmentService.postShipment(req.body, (error, result) => {
       if (result) return res.status(200).send(result);
       else return res.status(500).send(error);
     });
@@ -34,7 +34,7 @@ module.exports = {
   },
 
   updateShipment: (req, res) => {
-    shipmentService.updateShipment(req.body, req.file, (error, result) => {
+    shipmentService.updateShipment(req.body, (error, result) => {
       if (result) return res.status(200).send(result);
       else return res.status(500).send(error);
     });

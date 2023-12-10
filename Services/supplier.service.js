@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 
 module.exports = {
-  postSupplier: (model, file, callback) => {
+  postSupplier: (model, callback) => {
     console.log("API CALLED");
 
     const currentDate = new Date();
@@ -76,7 +76,7 @@ module.exports = {
     );
   },
 
-  updateSupplier: (model, file, callBack) => {
+  updateSupplier: (model, callBack) => {
     const currentDate = new Date();
     const formattedDate = currentDate
       .toISOString()
