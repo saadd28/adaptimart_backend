@@ -21,9 +21,9 @@ app.use("/api/product", productRoute)
 app.use("/api/category", categoryRoute)
 app.use("/api/supplier", supplierRoute)
 app.use("/api/shipment", shipmentRoute)
-
 app.use("/api/coupon", couponRoute);
 app.use("/api/account", accountRoute);
+
 app.use(express.static("./upload"));
 app.use(express.static("./upload_category"));
 

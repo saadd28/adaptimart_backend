@@ -7,6 +7,7 @@ module.exports = {
     console.log("API CALLED");
 
     const currentDate = new Date();
+    currentDate.setHours(currentDate.getHours() + 5);
     const formattedDate = currentDate
       .toISOString()
       .slice(0, 19)
@@ -101,6 +102,7 @@ module.exports = {
 
   updateCategory: (model, file, callBack) => {
     const currentDate = new Date();
+    currentDate.setHours(currentDate.getHours() + 5);
     const formattedDate = currentDate
       .toISOString()
       .slice(0, 19)

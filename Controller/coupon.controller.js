@@ -4,7 +4,7 @@ const couponService = require("../Services/coupon.service");
 
 module.exports = {
   postCoupon: (req, res) => {
-    couponService.postCoupon(req.body, req.file, (error, result) => {
+    couponService.postCoupon(req.body, (error, result) => {
       if (result) return res.status(200).send(result);
       else return res.status(500).send(error);
     });
@@ -34,7 +34,7 @@ module.exports = {
   },
 
   updateCoupon: (req, res) => {
-    couponService.updateCoupon(req.body, req.file, (error, result) => {
+    couponService.updateCoupon(req.body, (error, result) => {
       if (result) return res.status(200).send(result);
       else return res.status(500).send(error);
     });
@@ -43,6 +43,14 @@ module.exports = {
   getCouponsById: (req, res) => {
     console.log("req.query", req.query);
     couponService.getCouponsById(req.query, (error, result) => {
+      if (result) return res.status(200).send(result);
+      else return res.status(500).send(error);
+    });
+  },
+
+  getCouponsByDescription: (req, res) => {
+    console.log("req.query", req.query);
+    couponService.getCouponsByDescription(req.query, (error, result) => {
       if (result) return res.status(200).send(result);
       else return res.status(500).send(error);
     });

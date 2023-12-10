@@ -6,12 +6,20 @@ module.exports = {
   postSupplier: (model, callback) => {
     console.log("API CALLED");
 
+    // const currentDate = new Date();
+    // const formattedDate = currentDate
+    //   .toISOString()
+    //   .slice(0, 19)
+    //   .replace("T", " ");
+
     const currentDate = new Date();
+    currentDate.setHours(currentDate.getHours() + 5);
+
     const formattedDate = currentDate
       .toISOString()
       .slice(0, 19)
       .replace("T", " ");
-
+        
     console.log("model:", model);
 
     pool.query(
@@ -78,6 +86,7 @@ module.exports = {
 
   updateSupplier: (model, callBack) => {
     const currentDate = new Date();
+    currentDate.setHours(currentDate.getHours() + 5);
     const formattedDate = currentDate
       .toISOString()
       .slice(0, 19)
