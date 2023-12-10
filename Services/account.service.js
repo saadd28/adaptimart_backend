@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 
 module.exports = {
-  postProduct: (model, file, callback) => {
+  postAccount: (model, file, callback) => {
     console.log("API CALLED");
 
     const currentDate = new Date();
@@ -13,21 +13,32 @@ module.exports = {
       .replace("T", " ");
 
     console.log("model:", model);
-
+//id	first_name	last_name	email	phone	otp	otp_generation_time	verified	password	role_id	profile_pic	address	city	state	country	postal_code	action_type	created_on	edited_on
     pool.query(
-      "INSERT INTO `product` (`name`, `desc`, `image`, `overall_discount`, `item_discount`, `price`, `created_on`, `category_id`)  VALUES (?,?,?,?,?,?,?,?)",
+      "INSERT INTO `user` (`first_name`, `last_name`, `email`, `phone`, `otp`, `otp_generation_time`, `verified`, `password`, `role_id`, `profile_pic`, `address`, `city`, `state`, `country`, `postal_code`, `action_type`, `created_on`, `edited_on`)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
-        model.name,
-        model.description,
-        file.filename,
-        0,
-        0,
-        model.price,
-        formattedDate,
-        1,
+          model.first_name,
+          model.last_name,
+          model.email,
+          model.phone,
+          null,
+          null,
+          0,
+          model.password,
+          1,
+          file.filename,
+          model.address,
+          model.city,
+          model.state,
+          model.country,
+          model.postal_code,
+          1,
+          formattedDate,
+          null,
       ],
       (error, results) => {
-        if (error) {
+          if (error) {
+            console.log("error", error);
           return callback(error);
         }
         console.log("results", results);
@@ -36,8 +47,8 @@ module.exports = {
     );
   },
 
-  getAllProducts: (callBack) => {
-    pool.query(`SELECT * FROM product`, (error, results) => {
+  getAllAccounts: (callBack) => {
+    pool.query(`SELECT * FROM user`, (error, results) => {
       if (error) {
         return callBack(error);
       }
@@ -45,18 +56,18 @@ module.exports = {
     });
   },
 
-  deleteProduct: (id, callBack) => {
+  deleteAccount: (id, callBack) => {
     console.log("id", id);
 
     pool.query(
-      "SELECT image FROM `product` WHERE id = ?",
+      "SELECT profile_pic FROM `user` WHERE id = ?",
       [id],
       (error, results) => {
         if (error) {
           return callBack(error);
         }
 
-        const imageFileName = results[0].image; // Assuming there's only one result
+        const imageFileName = results[0].profile_pic; // Assuming there's only one result
 
         const scriptDir = __dirname;
 
@@ -71,9 +82,9 @@ module.exports = {
             return callBack(unlinkError);
           }
 
-          // After the image is deleted, update the product information
+          // After the image is deleted, update the Account information
           pool.query(
-            "DELETE FROM `product` WHERE id = ?",
+            "DELETE FROM `user` WHERE id = ?",
             [id],
             (error, results) => {
               if (error) {
@@ -88,10 +99,10 @@ module.exports = {
     );
   },
 
-  getProductsByName: (model, callBack) => {
+  getAccountsByName: (model, callBack) => {
     pool.query(
-      "SELECT * FROM product WHERE name LIKE ?",
-      [`%${model.name}%`],
+      "SELECT * FROM user WHERE first_name LIKE ?",
+      [`%${model.first_name}%`],
       (error, results) => {
         if (error) {
           return callBack(error);
@@ -101,7 +112,7 @@ module.exports = {
     );
   },
 
-  updateProduct: (model, file, callBack) => {
+  updateAccount: (model, file, callBack) => {
     const currentDate = new Date();
     const formattedDate = currentDate
       .toISOString()
@@ -111,17 +122,17 @@ module.exports = {
     // console.log("file", file);
 
     if (file == null) {
-      // No new image provided, update the product information only
+      // No new image provided, update the account information only
       console.log("file", file);
       pool.query(
-        "UPDATE `product` SET `name` = ?, `description` = ?, `price` = ?, `discount` = ?, `category` = ?, `sub_category` = ?, `stock` = ?, `created_on` = ? WHERE id = ?",
+        "UPDATE `user` SET `name` = ?, `description` = ?, `price` = ?, `discount` = ?, `Account` = ?, `sub_Account` = ?, `stock` = ?, `created_on` = ? WHERE id = ?",
         [
           model.name,
           model.description,
           model.price,
           model.discount,
-          model.category,
-          model.sub_category,
+          model.Account,
+          model.sub_Account,
           10,
           formattedDate,
           model.id,
@@ -134,9 +145,9 @@ module.exports = {
         }
       );
     } else {
-      // New image provided, update the product information and delete the old image
+      // New image provided, update the account information and delete the old image
       pool.query(
-        "SELECT image FROM `product` WHERE id = ?",
+        "SELECT image FROM `user` WHERE id = ?",
         [model.id],
         (error, results) => {
           if (error) {
@@ -158,17 +169,17 @@ module.exports = {
               return callBack(unlinkError);
             }
 
-            // After the image is deleted, update the product information
+            // After the image is deleted, update the account information
             pool.query(
-              "UPDATE `product` SET `name` = ?, `description` = ?, `image` = ?, `price` = ?, `discount` = ?, `category` = ?, `sub_category` = ?, `stock` = ?, `created_on` = ? WHERE id = ?",
+              "UPDATE `user` SET `name` = ?, `description` = ?, `image` = ?, `price` = ?, `discount` = ?, `Account` = ?, `sub_Account` = ?, `stock` = ?, `created_on` = ? WHERE id = ?",
               [
                 model.name,
                 model.description,
                 file.filename,
                 model.price,
                 model.discount,
-                model.category,
-                model.sub_category,
+                model.Account,
+                model.sub_Account,
                 10,
                 formattedDate,
                 model.id,
@@ -186,9 +197,9 @@ module.exports = {
     }
   },
 
-  getProductsById: (model, callBack) => {
+  getAccountsById: (model, callBack) => {
     pool.query(
-      "SELECT * FROM product WHERE id LIKE ?",
+      "SELECT * FROM user WHERE id LIKE ?",
       [`%${model.id}%`],
       (error, results) => {
         if (error) {
@@ -200,7 +211,7 @@ module.exports = {
   },
 };
 
-// CREATE TABLE `product` (
+// CREATE TABLE `account` (
 //     `id` bigint PRIMARY KEY,
 //     `name` varchar(255),
 //     `image` varchar(255),
@@ -208,9 +219,9 @@ module.exports = {
 //     `discount` double,
 //     `price` double,
 //     `unit_price` double,
-//     `category_id` bigint,
-//     `category` varchar(255),
-//     `sub_category` varchar(255),
+//     `Account_id` bigint,
+//     `Account` varchar(255),
+//     `sub_Account` varchar(255),
 //     `stock` int,
 //     `action_type` integer,
 //     `created_on` datetime,
