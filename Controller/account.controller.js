@@ -20,7 +20,15 @@ module.exports = {
     const id = req.body.id;
     console.log("req.body", req.body);
     accountService.deleteAccount(id, (error, result) => {
-      if (result.affectedRows === 1) return res.status(200).send(result);
+        if (result)
+        {    
+            if (result.affectedRows === 1)
+            {
+                return res.status(200).send(result);
+                
+            }
+                
+        }
       else return res.status(500).send(error);
     });
   },
