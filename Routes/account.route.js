@@ -1,6 +1,6 @@
 // const { postUser, authenticateUser } = require("../Controller/user.controller");
 
-const { postAccount, getAllAccounts, deleteAccount, getAccountsByName, updateAccount, getAccountsById } = require("../Controller/account.controller");
+const { postAccount, getAllAccounts, deleteAccount, getAccountsByName, updateAccount, getAccountsById ,blockUser,unblockUser } = require("../Controller/account.controller");
 
 const router = require("express").Router();
 
@@ -23,6 +23,8 @@ router.put("/delete", deleteAccount);
 router.get("/getbyname", getAccountsByName);
 router.post("/update", upload, updateAccount);
 router.get("/getbyid", getAccountsById);
+router.post("/blockUser", blockUser);
+router.post("/unblockUser", unblockUser);
 
 
 module.exports = router;

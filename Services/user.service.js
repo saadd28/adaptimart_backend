@@ -58,39 +58,7 @@ module.exports = {
       }
     );
 
-    // pool.query(
-    //     "INSERT INTO `user`(`first_name`, `last_name`, `email`, `phone`, `verified`, `password`, `role_id`, `action_type`, `created_on`)  VALUES (?,?,?,?,?,?,?,?,?)",
-    //     [
-    //         model.first_name,
-    //         model.last_name,
-    //         model.email,
-    //         model.phone,
-    //         model.verified,
-    //         model.password,
-    //         1,
-    //         0,
-    //         formattedDate
-    //     ],
-    //     (error, results) => {
-    //         if (error) {
-    //             return callback(error);
-    //         }
-    //         return callback(null, results);
-    //     }
-    // )
 
-    // pool.query(
-    //     "INSERT INTO `test`( `name`) VALUES (?)",
-    //     [
-    //         model.name
-    //     ],
-    //     (error, results) => {
-    //         if (error) {
-    //             return callback(error);
-    //         }
-    //         return callback(null, results)
-    //     }
-    // )
   },
 
   authenticateUser: (model, callback) => {
@@ -122,14 +90,6 @@ module.exports = {
           }
         });
 
-        // Compare the stored password hash with the provided password
-        // if (user.password !== password) {
-        //   return res.status(401).json({ message: "Invalid password" });
-        // }
-
-        // Authentication successful, you can generate a JWT token or set a session here
-        // For simplicity, we'll just send a success response
-        // return res.status(200).json({ message: "Login successful" });
       }
     );
   },
