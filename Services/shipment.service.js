@@ -89,6 +89,7 @@ module.exports = {
   },
 
   getShipmentsByName: (model, callBack) => {
+    console.log("name, ", model.name)
     pool.query(
         "SELECT shipment.*, supplier.name AS supplier_name FROM shipment LEFT JOIN supplier ON shipment.supplier_id = supplier.id WHERE shipment.name LIKE ?",
         [`%${model.name}%`],
