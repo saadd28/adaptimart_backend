@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 
 module.exports = {
-  postProduct: (model, file, callback) => {
+  postProductStock: (model, file, callback) => {
     console.log("API CALLED");
 
     const currentDate = new Date();
@@ -105,7 +105,7 @@ module.exports = {
     );
   },
 
-  // getAllProducts: (callBack) => {
+  // getAllProductStock: (callBack) => {
   //   pool.query(`SELECT * FROM product`, (error, results) => {
   //     if (error) {
   //       return callBack(error);
@@ -114,7 +114,7 @@ module.exports = {
   //   });
   // },
 
-  getAllProducts: (callBack) => {
+  getAllProductStock: (callBack) => {
     pool.query(
         "SELECT product.*, category.name AS category_name FROM product LEFT JOIN category ON product.category_id = category.id",
         (error, results) => {
@@ -126,7 +126,7 @@ module.exports = {
     );
   },
 
-  deleteProduct: (productId, callback) => {
+  deleteProductStock: (productId, callback) => {
     console.log("DELETE API CALLED");
 
     // Step 1: Delete from the 'supplier_product' table
@@ -194,7 +194,7 @@ module.exports = {
     );
   },
 
-  getProductsByName: (model, callBack) => {
+  getProductStockByName: (model, callBack) => {
     pool.query(
         "SELECT product.*, category.name AS category_name FROM product LEFT JOIN category ON product.category_id = category.id WHERE product.name LIKE ?",
         [`%${model.name}%`],
@@ -207,7 +207,7 @@ module.exports = {
     );
   },
 
-  updateProduct: (model, file, callBack) => {
+  updateProductStock: (model, file, callBack) => {
     const currentDate = new Date();
     currentDate.setHours(currentDate.getHours() + 5);
     const formattedDate = currentDate
@@ -304,7 +304,7 @@ module.exports = {
     );
   },
 
-  getProductsById: (model, callBack) => {
+  getProductStockById: (model, callBack) => {
     pool.query(
         "SELECT product.*, category.name AS category_name FROM product LEFT JOIN category ON product.category_id = category.id WHERE product.id LIKE ?",
         [`%${model.id}%`],
@@ -316,34 +316,4 @@ module.exports = {
         }
     );
   },
-
-  // getProductsById: (model, callBack) => {
-  //   pool.query(
-  //     "SELECT * FROM product WHERE id LIKE ?",
-  //     [`%${model.id}%`],
-  //     (error, results) => {
-  //       if (error) {
-  //         return callBack(error);
-  //       }
-  //       return callBack(null, results);
-  //     }
-  //   );
-  // },
 };
-
-// CREATE TABLE `product` (
-//     `id` bigint PRIMARY KEY,
-//     `name` varchar(255),
-//     `image` varchar(255),
-//     `description` varchar(255),
-//     `discount` double,
-//     `price` double,
-//     `unit_price` double,
-//     `category_id` bigint,
-//     `category` varchar(255),
-//     `sub_category` varchar(255),
-//     `stock` int,
-//     `action_type` integer,
-//     `created_on` datetime,
-//     `edited_on` datetime
-//   );

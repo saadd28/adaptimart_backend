@@ -7,7 +7,6 @@ module.exports = {
     console.log("API CALLED");
 
     const currentDate = new Date();
-    currentDate.setHours(currentDate.getHours() + 5);
     const formattedDate = currentDate
       .toISOString()
       .slice(0, 19)
@@ -57,18 +56,63 @@ module.exports = {
     });
   },
 
+//   deleteAccount: (id, callBack) => {
+//     console.log("id", id);
+
+//     pool.query(
+//       "SELECT profile_pic FROM `user` WHERE id = ?",
+//       [id],
+//       (error, results) => {
+//         if (error) {
+//           return callBack(error);
+//         }
+
+//         const imageFileName = results[0].profile_pic; // Assuming there's only one result
+
+//         const scriptDir = __dirname;
+
+//         // Use '..' to navigate up one directory to the root directory
+//         const uploadDir = path.join(scriptDir, "..", "upload");
+
+//         // Now, you can access files in the "upload" directory
+//         const imagePath = path.join(uploadDir, imageFileName);
+
+//         fs.unlink(imagePath, (unlinkError) => {
+//           if (unlinkError) {
+//             return callBack(unlinkError);
+//           }
+
+//           // After the image is deleted, update the Account information
+//           pool.query(
+//             "DELETE FROM `user` WHERE id = ?",
+//             [id],
+//             (error, results) => {
+//               if (error) {
+//                 return callBack(error);
+//               }
+//               console.log("results", results);
+//               return callBack(null, results);
+//             }
+//           );
+//         });
+//       }
+//     );
+//   },
+
   deleteAccount: (id, callBack) => {
     console.log("id", id);
 
     pool.query(
-      "SELECT profile_pic FROM `user` WHERE id = ?",
+      "SELECT `profile_pic` FROM `user` WHERE `id` = ?",
       [id],
       (error, results) => {
-        if (error) {
-          return callBack(error);
+          if (error) {
+            console.log("error", error);
+            return callBack(error);
         }
 
-        const imageFileName = results[0].profile_pic; // Assuming there's only one result
+          const imageFileName = results[0].profile_pic; // Assuming there's only one result
+          console.log("imageFileName", imageFileName);
 
         const scriptDir = __dirname;
 
@@ -83,23 +127,27 @@ module.exports = {
             return callBack(unlinkError);
           }
 
-          // After the image is deleted, update the Account information
+          // After the image is deleted, update the category information
           pool.query(
-            "DELETE FROM `user` WHERE id = ?",
+            "DELETE FROM `user` WHERE `id` = ?",
             [id],
             (error, results) => {
               if (error) {
+                console.log("error", error);
                 return callBack(error);
-              }
-              console.log("results", results);
-              return callBack(null, results);
+            }
+            console.log("results", results);
+            return callBack(null, results);
             }
           );
         });
       }
     );
   },
-
+  
+  
+  
+  
   getAccountsByName: (model, callBack) => {
     pool.query(
       "SELECT * FROM user WHERE first_name LIKE ?",
@@ -115,7 +163,6 @@ module.exports = {
 
   updateAccount: (model, file, callBack) => {
     const currentDate = new Date();
-    currentDate.setHours(currentDate.getHours() + 5);
     const formattedDate = currentDate
       .toISOString()
       .slice(0, 19)
@@ -127,17 +174,21 @@ module.exports = {
       // No new image provided, update the account information only
       console.log("file", file);
       pool.query(
-        "UPDATE `user` SET `name` = ?, `description` = ?, `price` = ?, `discount` = ?, `Account` = ?, `sub_Account` = ?, `stock` = ?, `created_on` = ? WHERE id = ?",
+        "UPDATE `user` SET `first_name` = ?, `last_name` = ?, `email` = ?, `phone` = ?, `password` = ?, `address` = ?, `city` = ?, `state` = ?, `country` = ?, `postal_code` = ?,`action_type` = ? ,`edited_on` = ? WHERE id = ?",
         [
-          model.name,
-          model.description,
-          model.price,
-          model.discount,
-          model.Account,
-          model.sub_Account,
-          10,
+          model.first_name,
+          model.last_name,
+          model.email,
+          model.phone,
+          model.password,
+          model.address,
+          model.city,
+          model.state,
+          model.country,
+          model.postal_code,
+          2,
           formattedDate,
-          model.id,
+          model.id,   
         ],
         (error, results) => {
           if (error) {
@@ -149,14 +200,14 @@ module.exports = {
     } else {
       // New image provided, update the account information and delete the old image
       pool.query(
-        "SELECT image FROM `user` WHERE id = ?",
+        "SELECT profile_pic FROM `user` WHERE id = ?",
         [model.id],
         (error, results) => {
           if (error) {
             return callBack(error);
           }
-
-          const imageFileName = results[0].image; // Assuming there's only one result
+          console.log("results", results[0])
+          const imageFileName = results[0].profile_pic; // Assuming there's only one result
 
           const scriptDir = __dirname;
 
@@ -173,18 +224,22 @@ module.exports = {
 
             // After the image is deleted, update the account information
             pool.query(
-              "UPDATE `user` SET `name` = ?, `description` = ?, `image` = ?, `price` = ?, `discount` = ?, `Account` = ?, `sub_Account` = ?, `stock` = ?, `created_on` = ? WHERE id = ?",
+              "UPDATE `user` SET `first_name` = ?, `last_name` = ?, `email` = ?, `phone` = ?,`password` = ?, `profile_pic`= ?, `address` = ?, `city` = ?, `state` = ?, `country` = ?, `postal_code` = ?, `action_type` = ?,`edited_on` = ? WHERE id = ?",
               [
-                model.name,
-                model.description,
+                model.first_name,
+                model.last_name,
+                model.email,
+                model.phone,
+                model.password,
                 file.filename,
-                model.price,
-                model.discount,
-                model.Account,
-                model.sub_Account,
-                10,
+                model.address,
+                model.city,
+                model.state,
+                model.country,
+                model.postal_code,
+                2,
                 formattedDate,
-                model.id,
+                model.id,   
               ],
               (error, results) => {
                 if (error) {
