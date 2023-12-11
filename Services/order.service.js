@@ -1,6 +1,7 @@
 const pool = require("../config/databse");
 const path = require("path");
 const fs = require("fs");
+const async = require('async')
 
 
 // Assuming product_list is an array of products in the order
@@ -333,7 +334,7 @@ module.exports = {
 
     // Update order status in the 'orders' table
     pool.query(
-      'UPDATE `order` SET `status` = ? WHERE `order_id` = ?',
+      'UPDATE `order` SET `status` = ? WHERE `id` = ?',
       [updatedStatus, model.order_id],
       (orderError, orderResults) => {
         if (orderError) {
@@ -373,11 +374,13 @@ module.exports = {
                   productCallback(null);
                 }
               );
-            } else {
-              // For other status values, just subtract quantity from 'quantity'
+            } 
+
+            else if (updatedStatus === 8) {
+              // Subtract quantity from 'in_delivery' and add to 'delivered'
               pool.query(
-                'UPDATE `product_stock` SET `quantity` = `quantity` - ? WHERE `product_id` = ?',
-                [product.quantity, product.product_id],
+                'UPDATE `product_stock` SET `in_delivery` = `in_delivery` - ?, `delivered` = `delivered` + ? WHERE `product_id` = ?',
+                [product.quantity, product.quantity, product.product_id],
                 (stockError, stockResults) => {
                   if (stockError) {
                     return productCallback(stockError);
@@ -387,7 +390,23 @@ module.exports = {
                   productCallback(null);
                 }
               );
-            }
+            } 
+
+            else if (updatedStatus === 9) {
+              // Subtract quantity from 'delivered' and add to 'returned'
+              pool.query(
+                'UPDATE `product_stock` SET `delivered` = `delivered` - ?, `returned` = `returned` + ? WHERE `product_id` = ?',
+                [product.quantity, product.quantity, product.product_id],
+                (stockError, stockResults) => {
+                  if (stockError) {
+                    return productCallback(stockError);
+                  }
+                  // You can perform additional logic or checks here if needed
+                  productCallback(null);
+                }
+              );
+            } 
+
           },
           (asyncError) => {
             if (asyncError) {
