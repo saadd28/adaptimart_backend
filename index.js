@@ -17,6 +17,7 @@ const accountRoute = require("./Routes/account.route")
 const lookupRoute = require("./Routes/lookup.route")
 const orderRoute = require("./Routes/order.route")
 const productStockRoute = require("./Routes/productStock.route")
+const returnRoute = require("./Routes/return.route")
 
 app.use("/api/user", userRoute)
 app.use("/api/product", productRoute)
@@ -28,6 +29,7 @@ app.use("/api/account", accountRoute);
 app.use("/api/lookup", lookupRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/productStock", productStockRoute);
+app.use("/api/return", returnRoute);
 
 app.use(express.static("./upload"));
 app.use(express.static("./upload_category"));
