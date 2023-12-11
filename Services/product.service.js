@@ -33,7 +33,7 @@ module.exports = {
             model.name,
             model.description,
             file.filename,
-            0,
+            model.item_discount,
             0,
             model.price,
             model.price,
@@ -116,7 +116,11 @@ module.exports = {
 
   getAllProducts: (callBack) => {
     pool.query(
-        "SELECT product.*, category.name AS category_name FROM product LEFT JOIN category ON product.category_id = category.id",
+        "SELECT product.*, category.name AS category_name, supplier.name AS supplier_name " +
+        "FROM product " +
+        "LEFT JOIN category ON product.category_id = category.id " +
+        "LEFT JOIN supplier_product ON product.id = supplier_product.product_id " +
+        "LEFT JOIN supplier ON supplier_product.supplier_id = supplier.id",
         (error, results) => {
             if (error) {
                 return callBack(error);
@@ -124,7 +128,7 @@ module.exports = {
             return callBack(null, results);
         }
     );
-  },
+},
 
   deleteProduct: (productId, callback) => {
     console.log("DELETE API CALLED");
@@ -194,9 +198,15 @@ module.exports = {
     );
   },
 
+
   getProductsByName: (model, callBack) => {
     pool.query(
-        "SELECT product.*, category.name AS category_name FROM product LEFT JOIN category ON product.category_id = category.id WHERE product.name LIKE ?",
+        "SELECT product.*, category.name AS category_name, supplier.name AS supplier_name " +
+        "FROM product " +
+        "LEFT JOIN category ON product.category_id = category.id " +
+        "LEFT JOIN supplier_product ON product.id = supplier_product.product_id " +
+        "LEFT JOIN supplier ON supplier_product.supplier_id = supplier.id " +
+        "WHERE product.name LIKE ?",
         [`%${model.name}%`],
         (error, results) => {
             if (error) {
@@ -205,7 +215,19 @@ module.exports = {
             return callBack(null, results);
         }
     );
-  },
+},
+  // getProductsByName: (model, callBack) => {
+  //   pool.query(
+  //       "SELECT product.*, category.name AS category_name FROM product LEFT JOIN category ON product.category_id = category.id WHERE product.name LIKE ?",
+  //       [`%${model.name}%`],
+  //       (error, results) => {
+  //           if (error) {
+  //               return callBack(error);
+  //           }
+  //           return callBack(null, results);
+  //       }
+  //   );
+  // },
 
   updateProduct: (model, file, callBack) => {
     const currentDate = new Date();
@@ -304,9 +326,15 @@ module.exports = {
     );
   },
 
+
   getProductsById: (model, callBack) => {
     pool.query(
-        "SELECT product.*, category.name AS category_name FROM product LEFT JOIN category ON product.category_id = category.id WHERE product.id LIKE ?",
+        "SELECT product.*, category.name AS category_name, supplier.name AS supplier_name " +
+        "FROM product " +
+        "LEFT JOIN category ON product.category_id = category.id " +
+        "LEFT JOIN supplier_product ON product.id = supplier_product.product_id " +
+        "LEFT JOIN supplier ON supplier_product.supplier_id = supplier.id " +
+        "WHERE product.id LIKE ?",
         [`%${model.id}%`],
         (error, results) => {
             if (error) {
@@ -315,7 +343,20 @@ module.exports = {
             return callBack(null, results);
         }
     );
-  },
+},
+
+  // getProductsById: (model, callBack) => {
+  //   pool.query(
+  //       "SELECT product.*, category.name AS category_name FROM product LEFT JOIN category ON product.category_id = category.id WHERE product.id LIKE ?",
+  //       [`%${model.id}%`],
+  //       (error, results) => {
+  //           if (error) {
+  //               return callBack(error);
+  //           }
+  //           return callBack(null, results);
+  //       }
+  //   );
+  // },
 
   // getProductsById: (model, callBack) => {
   //   pool.query(
