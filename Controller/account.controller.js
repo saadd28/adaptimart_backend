@@ -9,6 +9,12 @@ module.exports = {
       else return res.status(500).send(error);
     });
   },
+  postAdminAccount: (req, res) => {
+    accountService.postAdminAccount(req.body, req.file, (error, result) => {
+      if (result) return res.status(200).send(result);
+      else return res.status(500).send(error);
+    });
+  },
   getAllAccounts: (req, res) => {
     accountService.getAllAccounts((error, result) => {
       if (result) return res.status(200).send(result);

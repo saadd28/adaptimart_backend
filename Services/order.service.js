@@ -103,11 +103,17 @@ module.exports = {
       "order.action_type, " +
       "order.created_on, " +
       "order.edited_on, " +
-      "user.id AS user_id, " + // Rename user.id to avoid conflicts
+      "user.id AS user_id, " +
       "user.first_name, " +
       "user.last_name, " +
       "user.email, " +
-      "user.status AS user_status, " + // Include user.status separately
+      "user.phone AS user_phone, " +
+      "user.status AS user_status, " +
+      "user.address AS user_address, " +
+      "user.city AS user_city, " +
+      "user.state AS user_state, " +
+      "user.country AS user_country, " +
+      "user.postal_code AS user_postal_code, " +
       "order_product.product_id, " +
       "order_product.quantity, " +
       "product.name AS product_name, " +
@@ -183,7 +189,13 @@ module.exports = {
     "user.first_name, " +
     "user.last_name, " +
     "user.email, " +
+    "user.phone AS user_phone, " +
     "user.status AS user_status, " +
+    "user.address AS user_address, " +
+    "user.city AS user_city, " +
+    "user.state AS user_state, " +
+    "user.country AS user_country, " +
+    "user.postal_code AS user_postal_code, " +
     "order_product.product_id, " +
     "order_product.quantity, " +
     "product.name AS product_name, " +

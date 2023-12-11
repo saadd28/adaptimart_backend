@@ -1,6 +1,6 @@
 // const { postUser, authenticateUser } = require("../Controller/user.controller");
 
-const { postAccount, getAllAccounts, deleteAccount, getAccountsByName, updateAccount, getAccountsById ,blockUser,unblockUser } = require("../Controller/account.controller");
+const { postAccount, getAllAccounts, deleteAccount, getAccountsByName, updateAccount, getAccountsById ,blockUser,unblockUser, postAdminAccount } = require("../Controller/account.controller");
 
 const router = require("express").Router();
 
@@ -18,6 +18,7 @@ var upload = multer({
 }).single("profile_pic");
 
 router.post("/add", upload, postAccount);
+router.post("/adduseradmin", upload, postAdminAccount);
 router.get("/getall", getAllAccounts);
 router.put("/delete", deleteAccount);
 router.get("/getbyname", getAccountsByName);
