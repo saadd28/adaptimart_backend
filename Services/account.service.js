@@ -302,7 +302,7 @@ module.exports = {
       "LEFT JOIN `order` ON user.id = order.user_id " +
       "LEFT JOIN order_product ON order.id = order_product.order_id " +
       "LEFT JOIN product ON order_product.product_id = product.id " +
-      "WHERE user.role_id = 1 and user.first_name LIKE ? or user.last_name LIKE ?";
+      "WHERE user.role_id = 1 and user.first_name LIKE ? or user.role_id = 1 and user.last_name LIKE ?";
   
     pool.query(query, 
       [`%${model.name}%`, `%${model.name}%`],
