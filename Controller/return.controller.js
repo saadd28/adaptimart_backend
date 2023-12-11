@@ -19,12 +19,20 @@ module.exports = {
     });
   },
 
-  updatereturn: (req, res) => {
-    returnService.updatereturn(req.body, (error, result) => {
+  markasDamaged: (req, res) => {
+    returnService.markasDamaged(req.body, (error, result) => {
       if (result) return res.status(200).send(result);
       else return res.status(500).send(error);
     });
   },
+
+  markasunDamaged: (req, res) => {
+    returnService.markasunDamaged(req.body, (error, result) => {
+      if (result) return res.status(200).send(result);
+      else return res.status(500).send(error);
+    });
+  },
+
 
   getreturnsById: (req, res) => {
     console.log("req.query", req.query);

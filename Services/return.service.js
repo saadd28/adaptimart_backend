@@ -186,7 +186,7 @@ module.exports = {
         }
     )
   },
-  getreturnsByID: (model, callBack) => {
+  getreturnsById: (model, callBack) => {
     const id = model.id;
 
     const query =
@@ -275,98 +275,44 @@ module.exports = {
     )
   },
 
-  updatereturnStatus: (model, callBack) => {
-    const updatedStatus = model.status + 1;
-
+  markasDamaged: (model, callBack) => {
+    
     // Update order status in the 'orders' table
     pool.query(
-      'UPDATE `order` SET `status` = ? WHERE `id` = ?',
-      [updatedStatus, model.order_id],
-      (orderError, orderResults) => {
-        if (orderError) {
-          return callBack(orderError);
+        "UPDATE `product_stock` SET `returning` = `returning` - ?, `damaged` = `damaged` + ? WHERE `product_id` = ?",
+        [
+          model.quantity,
+          model.quantity,
+          model.product_id,
+        ],
+        (error, results) => {
+            if (error) {
+                return callBack(error);
+              }
+            return callBack(null, results);
         }
-
-        // Update product inventory in the 'product_stock' table
-        async.each(
-          model.product_list,
-          (product, productCallback) => {
-            // Assuming there's a table 'product_stock' with columns 'product_id', 'quantity', 'available', 'pending', 'in_delivery'
-            if (updatedStatus === 6) {
-              // Subtract quantity from 'available' and add to 'pending'
-              pool.query(
-                'UPDATE `product_stock` SET `available` = `available` - ?, `pending` = `pending` + ? WHERE `product_id` = ?',
-                [product.quantity, product.quantity, product.product_id],
-                (stockError, stockResults) => {
-                  if (stockError) {
-                    return productCallback(stockError);
-                  }
-
-                  // You can perform additional logic or checks here if needed
-                  productCallback(null);
-                }
-              );
-            } else if (updatedStatus === 7) {
-              // Subtract quantity from 'pending' and add to 'in_delivery'
-              pool.query(
-                'UPDATE `product_stock` SET `pending` = `pending` - ?, `in_delivery` = `in_delivery` + ? WHERE `product_id` = ?',
-                [product.quantity, product.quantity, product.product_id],
-                (stockError, stockResults) => {
-                  if (stockError) {
-                    return productCallback(stockError);
-                  }
-
-                  // You can perform additional logic or checks here if needed
-                  productCallback(null);
-                }
-              );
-            } 
-
-            else if (updatedStatus === 8) {
-              // Subtract quantity from 'in_delivery' and add to 'delivered'
-              pool.query(
-                'UPDATE `product_stock` SET `in_delivery` = `in_delivery` - ?, `delivered` = `delivered` + ? WHERE `product_id` = ?',
-                [product.quantity, product.quantity, product.product_id],
-                (stockError, stockResults) => {
-                  if (stockError) {
-                    return productCallback(stockError);
-                  }
-
-                  // You can perform additional logic or checks here if needed
-                  productCallback(null);
-                }
-              );
-            } 
-
-            else if (updatedStatus === 9) {
-              // Subtract quantity from 'delivered' and add to 'ordered'
-              pool.query(
-                'UPDATE `product_stock` SET `delivered` = `delivered` - ?, `ordered` = `ordered` + ? WHERE `product_id` = ?',
-                [product.quantity, product.quantity, product.product_id],
-                (stockError, stockResults) => {
-                  if (stockError) {
-                    return productCallback(stockError);
-                  }
-                  // You can perform additional logic or checks here if needed
-                  productCallback(null);
-                }
-              );
-            } 
-
-          },
-          (asyncError) => {
-            if (asyncError) {
-              return callBack(asyncError);
-            }
-
-            // Success, order the results
-            return callBack(null, { message: 'order status and product inventory updated successfully' });
-          }
-        );
-      }
-    );
+    )
   },
   
+  markasunDamaged: (model, callBack) => {
+    
+    // Update order status in the 'orders' table
+    pool.query(
+        "UPDATE `product_stock` SET `damaged` = `damaged` - ?, `available` = `available` + ? WHERE `product_id` = ?",
+        [
+          model.quantity,
+          model.quantity,
+          model.product_id,
+        ],
+        (error, results) => {
+            if (error) {
+                return callBack(error);
+              }
+            return callBack(null, results);
+        }
+    )
+},
   
+
   
 }
