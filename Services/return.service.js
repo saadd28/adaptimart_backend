@@ -66,6 +66,7 @@ module.exports = {
       "product.price AS product_price, " +
       "product.description AS product_description, " +
       "product.image AS product_image " +
+      "product.damage_status AS damage_status " +
       "FROM `order` " +
       "LEFT JOIN user ON order.user_id = user.id " +
       "LEFT JOIN order_product ON order.id = order_product.order_id " +
@@ -147,6 +148,7 @@ module.exports = {
     "product.price AS product_price, " +
     "product.description AS product_description, " +
     "product.image AS product_image " +
+    "product.damage_status AS damage_status " +
     "FROM `order` " +
     "LEFT JOIN user ON order.user_id = user.id " +
     "LEFT JOIN order_product ON order.id = order_product.order_id " +
@@ -234,6 +236,7 @@ module.exports = {
     "product.price AS product_price, " +
     "product.description AS product_description, " +
     "product.image AS product_image " +
+    "product.damage_status AS damage_status " +
     "FROM `order` " +
     "LEFT JOIN user ON order.user_id = user.id " +
     "LEFT JOIN order_product ON order.id = order_product.order_id " +
@@ -301,6 +304,11 @@ module.exports = {
             if (error) {
                 return callBack(error);
               }
+
+              pool.query(
+                "UPDATE `product` SET `damage_status` = 1",
+              )      
+
             return callBack(null, results);
         }
     )
@@ -320,6 +328,11 @@ module.exports = {
             if (error) {
                 return callBack(error);
               }
+
+              pool.query(
+                "UPDATE `product` SET `damage_status` = 2",
+              )
+
             return callBack(null, results);
         }
     )

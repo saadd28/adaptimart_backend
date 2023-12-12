@@ -28,7 +28,7 @@ module.exports = {
 
         // Step 2: Insert into the 'product' table
         pool.query(
-          "INSERT INTO `product` (`name`, `description`, `image`, `overall_discount`, `item_discount`, `price`, `unit_price`, `created_on`, `category_id`, `action_type`)  VALUES (?,?,?,?,?,?,?,?,?,?)",
+          "INSERT INTO `product` (`name`, `description`, `image`, `overall_discount`, `item_discount`, `price`, `unit_price`, `created_on`, `category_id`, `action_type`,`damage_status`)  VALUES (?,?,?,?,?,?,?,?,?,?,?)",
           [
             model.name,
             model.description,
@@ -40,6 +40,7 @@ module.exports = {
             formattedDate,
             categoryId,
             1,
+            0,
           ],
           (error, productResults) => {
             if (error) {
