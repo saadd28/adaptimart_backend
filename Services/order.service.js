@@ -167,7 +167,7 @@ module.exports = {
   
   
   getOrdersByName: (model, callBack) => {
-    const userName = model.first_name;
+    const userName = model.name;
 
     const query =
     "SELECT " +
@@ -206,12 +206,12 @@ module.exports = {
     "LEFT JOIN user ON order.user_id = user.id " +
     "LEFT JOIN order_product ON order.id = order_product.order_id " +
     "LEFT JOIN product ON order_product.product_id = product.id " +
-    "WHERE user.first_name LIKE ?"; // Filter by user's first name
+    "WHERE user.role_id = 1 and user.first_name LIKE ? or user.role_id = 1 and user.last_name LIKE ?"; // Filter by user's first name
 
     pool.query(
         query,
         [
-            [`%${userName}%`],
+            [`%${userName}%`],[`%${userName}%`],
         ],
         (error, results) =>{
             if (error) {
@@ -343,6 +343,12 @@ module.exports = {
 
   updateOrderStatus: (model, callBack) => {
     const updatedStatus = model.status + 1;
+    const currentDate = new Date();
+    currentDate.setHours(currentDate.getHours() + 5);
+    const formattedDate = currentDate
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
 
     // Update order status in the 'orders' table
     pool.query(
@@ -367,6 +373,7 @@ module.exports = {
                   if (stockError) {
                     return productCallback(stockError);
                   }
+                  
 
                   // You can perform additional logic or checks here if needed
                   productCallback(null);
