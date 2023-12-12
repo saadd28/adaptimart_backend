@@ -165,7 +165,6 @@ module.exports = {
     });
   },
   
-  
   getOrdersByName: (model, callBack) => {
     const userName = model.name;
 
@@ -349,89 +348,42 @@ module.exports = {
       .toISOString()
       .slice(0, 19)
       .replace("T", " ");
-
+  
     // Update order status in the 'orders' table
     pool.query(
-      'UPDATE `order` SET `status` = ? WHERE `id` = ?',
-      [updatedStatus, model.order_id],
+      'UPDATE `order` SET `status` = ?, `edited_on` = ?, `action_type` = ? WHERE `id` = ?',
+      [updatedStatus, formattedDate, 2, model.order_id],
       (orderError, orderResults) => {
         if (orderError) {
           return callBack(orderError);
         }
-
+        console.log("status", updatedStatus);
+  
         // Update product inventory in the 'product_stock' table
-        async.each(
+        async.eachSeries(
           model.product_list,
           (product, productCallback) => {
+            console.log("product", product);
             // Assuming there's a table 'product_stock' with columns 'product_id', 'quantity', 'available', 'pending', 'in_delivery'
             if (updatedStatus === 6) {
               // Subtract quantity from 'available' and add to 'pending'
-              pool.query(
-                'UPDATE `product_stock` SET `available` = `available` - ?, `pending` = `pending` + ? WHERE `product_id` = ?',
-                [product.quantity, product.quantity, product.product_id],
-                (stockError, stockResults) => {
-                  if (stockError) {
-                    return productCallback(stockError);
-                  }
-                  
-
-                  // You can perform additional logic or checks here if needed
-                  productCallback(null);
-                }
-              );
+              updateProductStock(product.product_id, product.quantity, product.quantity, 0, productCallback);
             } else if (updatedStatus === 7) {
               // Subtract quantity from 'pending' and add to 'in_delivery'
-              pool.query(
-                'UPDATE `product_stock` SET `pending` = `pending` - ?, `in_delivery` = `in_delivery` + ? WHERE `product_id` = ?',
-                [product.quantity, product.quantity, product.product_id],
-                (stockError, stockResults) => {
-                  if (stockError) {
-                    return productCallback(stockError);
-                  }
-
-                  // You can perform additional logic or checks here if needed
-                  productCallback(null);
-                }
-              );
-            } 
-
-            else if (updatedStatus === 8) {
+              updateProductStock(product.product_id, 0, product.quantity, product.quantity, productCallback);
+            } else if (updatedStatus === 8) {
               // Subtract quantity from 'in_delivery' and add to 'delivered'
-              pool.query(
-                'UPDATE `product_stock` SET `in_delivery` = `in_delivery` - ?, `delivered` = `delivered` + ? WHERE `product_id` = ?',
-                [product.quantity, product.quantity, product.product_id],
-                (stockError, stockResults) => {
-                  if (stockError) {
-                    return productCallback(stockError);
-                  }
-
-                  // You can perform additional logic or checks here if needed
-                  productCallback(null);
-                }
-              );
-            } 
-
-            else if (updatedStatus === 9) {
+              updateProductStock(product.product_id, 0, 0, product.quantity, productCallback);
+            } else if (updatedStatus === 9) {
               // Subtract quantity from 'delivered' and add to 'returned'
-              pool.query(
-                'UPDATE `product_stock` SET `delivered` = `delivered` - ?, `returning` = `returning` + ? WHERE `product_id` = ?',
-                [product.quantity, product.quantity, product.product_id],
-                (stockError, stockResults) => {
-                  if (stockError) {
-                    return productCallback(stockError);
-                  }
-                  // You can perform additional logic or checks here if needed
-                  productCallback(null);
-                }
-              );
-            } 
-
+              updateProductStock(product.product_id, 0, 0, 0, product.quantity, productCallback);
+            }
           },
           (asyncError) => {
             if (asyncError) {
               return callBack(asyncError);
             }
-
+  
             // Success, return the results
             return callBack(null, { message: 'Order status and product inventory updated successfully' });
           }
@@ -440,91 +392,123 @@ module.exports = {
     );
   },
   
-  
-  
-
-//   deleteProduct: (productId, callback) => {
-//     console.log("DELETE API CALLED");
-
-//     // Step 1: Delete from the 'supplier_product' table
-//     pool.query(
-//         "DELETE FROM `supplier_product` WHERE `product_id` = ?",
-//         [productId],
-//         (supplierProductError, supplierProductResults) => {
-//             if (supplierProductError) {
-//                 return callback(supplierProductError);
-//             }
-
-//             // Step 2: Delete from the 'product_stock' table
-//             pool.query(
-//                 "DELETE FROM `product_stock` WHERE `product_id` = ?",
-//                 [productId],
-//                 (stockError, stockResults) => {
-//                     if (stockError) {
-//                         return callback(stockError);
-//                     }
-                    
-//                     pool.query(
-//                       "SELECT image FROM `product` WHERE id = ?",
-//                       [productId],
-//                       (error, results) => {
-//                         if (error) {
-//                           return callBack(error);
-//                         }
-                
-//                         const imageFileName = results[0].image; // Assuming there's only one result
-                
-//                         const scriptDir = __dirname;
-                
-//                         // Use '..' to navigate up one directory to the root directory
-//                         const uploadDir = path.join(scriptDir, "..", "upload");
-                
-//                         // Now, you can access files in the "upload" directory
-//                         const imagePath = path.join(uploadDir, imageFileName);
-                
-//                         fs.unlink(imagePath, (unlinkError) => {
-//                           if (unlinkError) {
-//                             return callBack(unlinkError);
-//                           }
-                
-//                           // After the image is deleted, update the category information
-//                           // Step 3: Delete from the 'product' table
-//                           pool.query(
-//                             "DELETE FROM `product` WHERE `id` = ?",
-//                             [productId],
-//                             (error, productResults) => {
-//                                 if (error) {
-//                                     return callback(error);
-//                                 }
-
-//                                 console.log("Product deleted successfully");
-//                                 return callback(null, productResults);
-//                             }
-//                           );
-//                         });
-//                       }
-//                     );
-                    
-//                 }
-//             );
-//         }
-//     );
-//   },
+  // Helper function to update product_stock
 
 
+  // updateOrderStatus: (model, callBack) => {
+  //   const updatedStatus = model.status + 1;
+  //   const currentDate = new Date();
+  //   currentDate.setHours(currentDate.getHours() + 5);
+  //   const formattedDate = currentDate
+  //     .toISOString()
+  //     .slice(0, 19)
+  //     .replace("T", " ");
+
+  //   // Update order status in the 'orders' table
+  //   pool.query(
+  //     'UPDATE `order` SET `status` = ? WHERE `id` = ?',
+  //     [updatedStatus, model.order_id],
+  //     (orderError, orderResults) => {
+  //       if (orderError) {
+  //         return callBack(orderError);
+  //       }
+  //       console.log("status", updatedStatus)
 
 
+  //       // Update product inventory in the 'product_stock' table
+  //       async.eachSeries(
+  //         model.product_list,
+  //         (product, productCallback) => {
+  //           console.log("product", product)
+  //           // Assuming there's a table 'product_stock' with columns 'product_id', 'quantity', 'available', 'pending', 'in_delivery'
+  //           if (updatedStatus === 6) {
+  //             // Subtract quantity from 'available' and add to 'pending'
+  //             pool.query(
+  //               'UPDATE `product_stock` SET `available` = `available` - ?, `pending` = `pending` + ? WHERE `product_id` = ?',
+  //               [product.quantity, product.quantity, product.product_id],
+  //               (stockError, stockResults) => {
+  //                 if (stockError) {
+  //                   return productCallback(stockError);
+  //                 }
+                  
 
-//   getProductsById: (model, callBack) => {
-//     pool.query(
-//         "SELECT product.*, category.name AS category_name FROM product LEFT JOIN category ON product.category_id = category.id WHERE product.id LIKE ?",
-//         [`%${model.id}%`],
-//         (error, results) => {
-//             if (error) {
-//                 return callBack(error);
-//             }
-//             return callBack(null, results);
-//         }
-//     );
-//   }
+  //                 // You can perform additional logic or checks here if needed
+  //                 productCallback(null);
+  //               }
+  //             );
+  //           } else if (updatedStatus === 7) {
+  //             // Subtract quantity from 'pending' and add to 'in_delivery'
+  //             pool.query(
+  //               'UPDATE `product_stock` SET `pending` = `pending` - ?, `in_delivery` = `in_delivery` + ? WHERE `product_id` = ?',
+  //               [product.quantity, product.quantity, product.product_id],
+  //               (stockError, stockResults) => {
+  //                 if (stockError) {
+  //                   return productCallback(stockError);
+  //                 }
+
+  //                 // You can perform additional logic or checks here if needed
+  //                 productCallback(null);
+  //               }
+  //             );
+  //           } 
+
+  //           else if (updatedStatus === 8) {
+  //             // Subtract quantity from 'in_delivery' and add to 'delivered'
+  //             pool.query(
+  //               'UPDATE `product_stock` SET `in_delivery` = `in_delivery` - ?, `delivered` = `delivered` + ? WHERE `product_id` = ?',
+  //               [product.quantity, product.quantity, product.product_id],
+  //               (stockError, stockResults) => {
+  //                 if (stockError) {
+  //                   return productCallback(stockError);
+  //                 }
+
+  //                 // You can perform additional logic or checks here if needed
+  //                 productCallback(null);
+  //               }
+  //             );
+  //           } 
+
+  //           else if (updatedStatus === 9) {
+  //             // Subtract quantity from 'delivered' and add to 'returned'
+  //             pool.query(
+  //               'UPDATE `product_stock` SET `delivered` = `delivered` - ?, `returning` = `returning` + ? WHERE `product_id` = ?',
+  //               [product.quantity, product.quantity, product.product_id],
+  //               (stockError, stockResults) => {
+  //                 if (stockError) {
+  //                   return productCallback(stockError);
+  //                 }
+  //                 // You can perform additional logic or checks here if needed
+  //                 productCallback(null);
+  //               }
+  //             );
+  //           } 
+
+  //         },
+  //         (asyncError) => {
+  //           if (asyncError) {
+  //             return callBack(asyncError);
+  //           }
+
+  //           // Success, return the results
+  //           return callBack(null, { message: 'Order status and product inventory updated successfully' });
+  //         }
+  //       );
+  //     }
+  //   );
+  // },
+}
+
+const updateProductStock = (product_id, availableDiff, pendingDiff, inDeliveryDiff, deliveredDiff, returningDiff, callback) => {
+  pool.query(
+    'UPDATE `product_stock` SET `available` = `available` - ?, `pending` = `pending` + ?, `in_delivery` = `in_delivery` + ?, `delivered` = `delivered` + ?, `returning` = `returning` + ? WHERE `product_id` = ?',
+    [availableDiff, pendingDiff, inDeliveryDiff, deliveredDiff, returningDiff, product_id],
+    (stockError, stockResults) => {
+      if (stockError) {
+        return callback(stockError);
+      }
+
+      // You can perform additional logic or checks here if needed
+      callback(null);
+    }
+  );
 }

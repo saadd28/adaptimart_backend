@@ -49,11 +49,17 @@ module.exports = {
       "order.action_type, " +
       "order.created_on, " +
       "order.edited_on, " +
-      "user.id AS user_id, " + // Rename user.id to avoid conflicts
+      "user.id AS user_id, " +
       "user.first_name, " +
       "user.last_name, " +
       "user.email, " +
-      "user.status AS user_status, " + // Include user.status separately
+      "user.phone AS user_phone, " +
+      "user.status AS user_status, " +
+      "user.address AS user_address, " +
+      "user.city AS user_city, " +
+      "user.state AS user_state, " +
+      "user.country AS user_country, " +
+      "user.postal_code AS user_postal_code, " +
       "order_product.product_id, " +
       "order_product.quantity, " +
       "product.name AS product_name, " +
@@ -104,10 +110,9 @@ module.exports = {
       return callBack(null, ordersArray);
     });
   },
-  
-  
+   
   getreturnsByName: (model, callBack) => {
-    const userName = model.first_name;
+    const userName = model.name;
 
     const query =
     "SELECT " +
@@ -129,7 +134,13 @@ module.exports = {
     "user.first_name, " +
     "user.last_name, " +
     "user.email, " +
+    "user.phone AS user_phone, " +
     "user.status AS user_status, " +
+    "user.address AS user_address, " +
+    "user.city AS user_city, " +
+    "user.state AS user_state, " +
+    "user.country AS user_country, " +
+    "user.postal_code AS user_postal_code, " +
     "order_product.product_id, " +
     "order_product.quantity, " +
     "product.name AS product_name, " +
@@ -140,12 +151,12 @@ module.exports = {
     "LEFT JOIN user ON order.user_id = user.id " +
     "LEFT JOIN order_product ON order.id = order_product.order_id " +
     "LEFT JOIN product ON order_product.product_id = product.id " +
-    "WHERE user.first_name LIKE ? and order.status=9"; // Filter by user's first name
+    "WHERE user.role_id = 1 and user.first_name LIKE ? and order.status = 9 or user.role_id = 1 and user.last_name LIKE ? and order.status = 9"; // Filter by user's first name
 
     pool.query(
         query,
         [
-            [`%${userName}%`],
+            [`%${userName}%`],[`%${userName}%`],
         ],
         (error, results) =>{
             if (error) {
@@ -186,6 +197,7 @@ module.exports = {
         }
     )
   },
+
   getreturnsById: (model, callBack) => {
     const id = model.id;
 
