@@ -310,7 +310,7 @@ module.exports = {
     
     // Update order status in the 'orders' table
     pool.query(
-        "UPDATE `product_stock` SET `damaged` = `damaged` - ?, `available` = `available` + ? WHERE `product_id` = ?",
+        "UPDATE `product_stock` SET `returning` = `returning` - ?, `available` = `available` + ? WHERE `product_id` = ?",
         [
           model.quantity,
           model.quantity,
