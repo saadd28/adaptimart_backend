@@ -65,7 +65,7 @@ module.exports = {
       "product.name AS product_name, " +
       "product.price AS product_price, " +
       "product.description AS product_description, " +
-      "product.image AS product_image " +
+      "product.image AS product_image, " +
       "product.damage_status AS damage_status " +
       "FROM `order` " +
       "LEFT JOIN user ON order.user_id = user.id " +
@@ -147,7 +147,7 @@ module.exports = {
     "product.name AS product_name, " +
     "product.price AS product_price, " +
     "product.description AS product_description, " +
-    "product.image AS product_image " +
+    "product.image AS product_image, " +
     "product.damage_status AS damage_status " +
     "FROM `order` " +
     "LEFT JOIN user ON order.user_id = user.id " +
@@ -235,7 +235,7 @@ module.exports = {
     "product.name AS product_name, " +
     "product.price AS product_price, " +
     "product.description AS product_description, " +
-    "product.image AS product_image " +
+    "product.image AS product_image, " +
     "product.damage_status AS damage_status " +
     "FROM `order` " +
     "LEFT JOIN user ON order.user_id = user.id " +
