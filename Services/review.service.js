@@ -37,7 +37,7 @@ module.exports = {
   },
 
   getAllReviews: (callBack) => {
-    pool.query(`SELECT * FROM reviews`, (error, results) => {
+    pool.query(`SELECT reviews.id,reviews.product_id,reviews.user_id,reviews.review,reviews.rating,user.first_name,user.last_name FROM reviews left join user on reviews.user_id = user.id`, (error, results) => {
       if (error) {
         return callBack(error);
       }
@@ -60,7 +60,7 @@ module.exports = {
 
   getReviewsByName: (model, callBack) => {
     pool.query(
-      "SELECT * FROM reviews WHERE review LIKE ?",
+      "SELECT reviews.id,reviews.product_id,reviews.user_id,reviews.review,reviews.rating,user.first_name,user.last_name FROM reviews left join user on reviews.user_id = user.id where review LIKE ?",
       [`%${model.review}%`],
       (error, results) => {
         if (error) {
@@ -99,7 +99,7 @@ module.exports = {
 
   getReviewsById: (model, callBack) => {
     pool.query(
-      "SELECT * FROM reviews WHERE id LIKE ?",
+      "SELECT reviews.id,reviews.product_id,reviews.user_id,reviews.review,reviews.rating,user.first_name,user.last_name FROM reviews left join user on reviews.user_id = user.id where reviews.id LIKE?",
       [`%${model.id}%`],
       (error, results) => {
         if (error) {
@@ -111,7 +111,7 @@ module.exports = {
   },
   getReviewsByProductId: (model, callBack) => {
     pool.query(
-      "SELECT * FROM reviews WHERE product_id = ?",
+      "SELECT reviews.id,reviews.product_id,reviews.user_id,reviews.review,reviews.rating,user.first_name,user.last_name FROM reviews left join user on reviews.user_id = user.id WHERE product_id = ?",
       [model.product_id],
       (error, results) => {
         if (error) {
