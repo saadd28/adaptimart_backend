@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 
 module.exports = {
-  postCoupon: (model, callback) => {
+  postReview: (model, callback) => {
     console.log("API CALLED");
 
     const currentDate = new Date();
@@ -16,11 +16,12 @@ module.exports = {
     console.log("model:", model);
 
     pool.query(
-      "INSERT INTO `coupon` (`code`, `description`, `discount_percentage`, `action_type`, `created_on`, `edited_on`)  VALUES (?,?,?,?,?,?)",
+      "INSERT INTO `reviews` (`product_id`, `user_id`, `review`, `rating`, `action_type`, `created_on`, `edited_on`)  VALUES (?,?,?,?,?,?,?)",
       [
-        model.code,
-        model.description,
-        model.discount_percentage,
+        model.product_id,
+        model.user_id,
+        model.review,
+        model.rating,
         1,
         formattedDate,
         null,
@@ -35,8 +36,8 @@ module.exports = {
     );
   },
 
-  getAllCoupons: (callBack) => {
-    pool.query(`SELECT * FROM coupon`, (error, results) => {
+  getAllReviews: (callBack) => {
+    pool.query(`SELECT reviews.id,reviews.product_id,reviews.user_id,reviews.review,reviews.rating,user.first_name,user.last_name FROM reviews left join user on reviews.user_id = user.id`, (error, results) => {
       if (error) {
         return callBack(error);
       }
@@ -44,9 +45,9 @@ module.exports = {
     });
   },
 
-  deleteCoupon:(id, callBack) => {
+  deleteReview:(id, callBack) => {
     pool.query(
-        "DELETE FROM coupon WHERE id = ?",
+        "DELETE FROM reviews WHERE id = ?",
         [id],
         (error, results) => {
           if (error) {
@@ -57,10 +58,10 @@ module.exports = {
         });
   },
 
-  getCouponsByCode: (model, callBack) => {
+  getReviewsByName: (model, callBack) => {
     pool.query(
-      "SELECT * FROM coupon WHERE code LIKE ?",
-      [`%${model.code}%`],
+      "SELECT reviews.id,reviews.product_id,reviews.user_id,reviews.review,reviews.rating,user.first_name,user.last_name FROM reviews left join user on reviews.user_id = user.id where review LIKE ?",
+      [`%${model.review}%`],
       (error, results) => {
         if (error) {
           return callBack(error);
@@ -70,7 +71,7 @@ module.exports = {
     );
   },
 
-  updateCoupon: (model, callBack) => {
+  updateReview: (model, callBack) => {
     const currentDate = new Date();
     currentDate.setHours(currentDate.getHours() + 5);
     const formattedDate = currentDate
@@ -78,13 +79,11 @@ module.exports = {
       .slice(0, 19)
       .replace("T", " ");
 
-
     pool.query(
-      "UPDATE `coupon` SET `code` = ?, `description` = ?, `discount_percentage` = ?,  `action_type` = ?, `edited_on` = ? WHERE id = ?",
+      "UPDATE `reviews` SET `review` = ?, `rating` = ?, `action_type` = ?, `edited_on` = ? WHERE id = ?",
       [
-        model.code,
-        model.description,
-        model.discount_percentage,
+        model.review,
+        model.rating,
         2,
         formattedDate,
         model.id,
@@ -98,9 +97,9 @@ module.exports = {
     );
   },
 
-  getCouponsById: (model, callBack) => {
+  getReviewsById: (model, callBack) => {
     pool.query(
-      "SELECT * FROM coupon WHERE id LIKE ?",
+      "SELECT reviews.id,reviews.product_id,reviews.user_id,reviews.review,reviews.rating,user.first_name,user.last_name FROM reviews left join user on reviews.user_id = user.id where reviews.id LIKE?",
       [`%${model.id}%`],
       (error, results) => {
         if (error) {
@@ -110,11 +109,10 @@ module.exports = {
       }
     );
   },
-
-  getCouponsByDescription: (model, callBack) => {
+  getReviewsByProductId: (model, callBack) => {
     pool.query(
-      "SELECT * FROM coupon WHERE description LIKE ?",
-      [`%${model.description}%`],
+      "SELECT reviews.id,reviews.product_id,reviews.user_id,reviews.review,reviews.rating,user.first_name,user.last_name FROM reviews left join user on reviews.user_id = user.id WHERE product_id = ?",
+      [model.product_id],
       (error, results) => {
         if (error) {
           return callBack(error);
@@ -123,5 +121,18 @@ module.exports = {
       }
     );
   },
-};
 
+  getTotal: (model, callBack) => {
+    pool.query(
+      "SELECT COUNT(*) AS total_reviews, AVG(rating) as average_rating FROM reviews WHERE product_id = ?",
+      [model.product_id],
+      (error, results) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+
+};

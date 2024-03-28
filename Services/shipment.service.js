@@ -65,15 +65,7 @@ module.exports = {
     );
   },
 
-    // getAllShipments: (callBack) => {
-    //     pool.query(`SELECT * FROM shipment`, (error, results) => {
-    //       if (error) {
-    //         return callBack(error);
-    //       }
-    //       return callBack(null, results);
-    //     });
-    //   },
-
+ 
   deleteShipment: (id, callBack) => {
       pool.query(
           "DELETE FROM `shipment` WHERE id = ?",
