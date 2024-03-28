@@ -20,6 +20,7 @@ const productStockRoute = require("./Routes/productStock.route")
 const returnRoute = require("./Routes/return.route")
 const dashboardRoute = require("./Routes/dashboard.route")
 const userordersRoute = require("./Routes/userorders.route")
+const reviewRoute = require("./Routes/review.route")
 
 app.use("/api/user", userRoute)
 app.use("/api/product", productRoute)
@@ -34,6 +35,7 @@ app.use("/api/productStock", productStockRoute);
 app.use("/api/return", returnRoute);
 app.use("/api/dashboard", dashboardRoute);
 app.use("/api/userorders", userordersRoute);
+app.use("/api/review", reviewRoute);
 
 app.use(express.static("./upload"));
 app.use(express.static("./upload_category"));
