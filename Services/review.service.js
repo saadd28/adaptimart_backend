@@ -79,7 +79,6 @@ module.exports = {
       .slice(0, 19)
       .replace("T", " ");
 
-
     pool.query(
       "UPDATE `reviews` SET `review` = ?, `rating` = ?, `action_type` = ?, `edited_on` = ? WHERE id = ?",
       [
@@ -110,4 +109,30 @@ module.exports = {
       }
     );
   },
+  getReviewsByProductId: (model, callBack) => {
+    pool.query(
+      "SELECT * FROM reviews WHERE product_id = ?",
+      [model.product_id],
+      (error, results) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+
+  getTotal: (model, callBack) => {
+    pool.query(
+      "SELECT COUNT(*) AS total_reviews, AVG(rating) as average_rating FROM reviews WHERE product_id = ?",
+      [model.product_id],
+      (error, results) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+
 };

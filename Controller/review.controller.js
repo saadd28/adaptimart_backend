@@ -15,7 +15,13 @@ module.exports = {
       else return res.status(500).send(error);
     });
   },
-
+  getTotal: (req, res) => {
+    console.log("req.query", req.query);
+    reviewService.getTotal(req.query, (error, result) => {
+      if (result) return res.status(200).send(result);
+      else return res.status(500).send(error);
+    });
+  },
   deleteReview: (req, res) => {
     const id = req.body.id;
     console.log("req.body", req.body);
@@ -43,6 +49,14 @@ module.exports = {
   getReviewsById: (req, res) => {
     console.log("req.query", req.query);
     reviewService.getReviewsById(req.query, (error, result) => {
+      if (result) return res.status(200).send(result);
+      else return res.status(500).send(error);
+    });
+  },
+
+  getReviewsByProductId: (req, res) => {
+    console.log("req.query", req.query);
+    reviewService.getReviewsByProductId(req.query, (error, result) => {
       if (result) return res.status(200).send(result);
       else return res.status(500).send(error);
     });
