@@ -70,6 +70,14 @@ module.exports = {
     });
   },
 
+  changepassword: (req, res) => {
+    console.log("req.query", req.query);
+    accountService.changepassword(req.query, (error, result) => {
+      if (result) return res.status(200).send(result);
+      else return res.status(500).send(error);
+    });
+  },
+
   unblockUser: (req, res) => {
     console.log("req.query", req.query);
     accountService.unblockUser(req.query, (error, result) => {

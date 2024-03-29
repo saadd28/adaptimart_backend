@@ -1,6 +1,6 @@
 // const { postUser, authenticateUser } = require("../Controller/user.controller");
 
-const { postAccount, getAllAccounts, deleteAccount, getAccountsByName, updateAccount, getAccountsById ,blockUser,unblockUser, postAdminAccount , login} = require("../Controller/account.controller");
+const { postAccount, getAllAccounts, deleteAccount, getAccountsByName, updateAccount, getAccountsById ,blockUser,unblockUser, postAdminAccount , login, changepassword} = require("../Controller/account.controller");
 
 const router = require("express").Router();
 
@@ -27,6 +27,8 @@ router.get("/getbyid", getAccountsById);
 router.get("/login", login);
 router.post("/blockUser", blockUser);
 router.post("/unblockUser", unblockUser);
+router.post("/changepassword", changepassword);
+
 
 
 module.exports = router;

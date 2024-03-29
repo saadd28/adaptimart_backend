@@ -616,6 +616,19 @@ module.exports = {
     );
   },
 
+  changepassword: (model, callBack) => {
+    pool.query(
+      "UPDATE user SET password = ? WHERE id = ?",
+      [model.password,model.id],
+      (error, results) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+
   unblockUser: (model, callBack) => {
     pool.query(
       "UPDATE `user` SET `status` = 2 WHERE id = ?",
