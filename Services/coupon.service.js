@@ -78,7 +78,6 @@ module.exports = {
       .slice(0, 19)
       .replace("T", " ");
 
-
     pool.query(
       "UPDATE `coupon` SET `code` = ?, `description` = ?, `discount_percentage` = ?,  `action_type` = ?, `edited_on` = ? WHERE id = ?",
       [
