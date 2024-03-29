@@ -675,10 +675,10 @@ module.exports = {
       "LEFT JOIN `order` ON user.id = order.user_id " +
       "LEFT JOIN order_product ON order.id = order_product.order_id " +
       "LEFT JOIN product ON order_product.product_id = product.id " +
-      "WHERE user.role_id = 1 and user.id = ? and user.password = ?";
-  
+      "WHERE user.role_id = 1 and user.email = ? and user.password = ?";
+
     pool.query(query, 
-      [model.id,model.password],
+      [model.email,model.password],
        (error, results) => {
       if (error) {
         console.error('Error fetching users:', error);
