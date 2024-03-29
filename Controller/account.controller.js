@@ -54,6 +54,14 @@ module.exports = {
     });
   },
 
+  login: (req, res) => {
+    console.log("req.query", req.query);
+    accountService.login(req.query, (error, result) => {
+      if (result) return res.status(200).send(result);
+      else return res.status(500).send(error);
+    });
+  },
+
   blockUser: (req, res) => {
     console.log("req.query", req.query);
     accountService.blockUser(req.query, (error, result) => {
