@@ -42,7 +42,7 @@ module.exports = {
 
     console.log("model:", model);
 
-    const product_list = model.product_list;
+    const product_list = model.products_list;
     const totalPrice = calculateTotalPrice(product_list);
 
     pool.query(
@@ -72,7 +72,7 @@ module.exports = {
           (product) => (callback) => {
             pool.query(
               "INSERT INTO `order_product` (`order_id`, `product_id`, `quantity`) VALUES (?, ?, ?)",
-              [orderId, product.product_id, product.quantity],
+              [orderId, product.id, product.quantity],
               (productInsertError) => {
                 if (productInsertError) {
                   return callback(productInsertError);
