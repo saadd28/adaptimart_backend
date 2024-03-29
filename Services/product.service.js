@@ -106,6 +106,31 @@ module.exports = {
     );
   },
 
+  updateprice: (model, callBack) => {
+    const currentDate = new Date();
+    currentDate.setHours(currentDate.getHours() + 5);
+    const formattedDate = currentDate
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+
+    pool.query(
+      "UPDATE `product` SET `price` = ?, `action_type` = ?, `edited_on` = ? WHERE id = ?",
+      [
+        model.price,
+        2,
+        formattedDate,
+        model.id,
+      ],
+      (error, results) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+
   // getAllProducts: (callBack) => {
   //   pool.query(`SELECT * FROM product`, (error, results) => {
   //     if (error) {

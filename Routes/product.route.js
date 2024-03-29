@@ -1,6 +1,6 @@
 // const { postUser, authenticateUser } = require("../Controller/user.controller");
 
-const { postProduct, getAllProducts, deleteProduct, getProductsByName, updateProduct, getProductsById } = require("../Controller/product.controller");
+const { postProduct, getAllProducts, deleteProduct, getProductsByName, updateProduct, getProductsById,updateprice } = require("../Controller/product.controller");
 
 const router = require("express").Router();
 
@@ -23,6 +23,7 @@ router.put("/delete", deleteProduct);
 router.get("/getbyname", getProductsByName);
 router.post("/update", upload, updateProduct);
 router.get("/getbyid", getProductsById);
+router.post("/updateprice", updateprice);
 
 
 module.exports = router;
