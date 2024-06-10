@@ -1,11 +1,11 @@
 const { createPool } = require("mysql");
 
 const pool = createPool({
-    port: 3306,
-    host: "http://adaptimartv1.cxegism0q4e1.eu-north-1.rds.amazonaws.com",
-    user: "root",
-    password: "12345678",
-    database: "adaptimartv1",
+    port: 12425,
+    host: "adaptimartv1-adaptimart.d.aivencloud.com",
+    user: "avnadmin",
+    password: "AVNS_uBbu5R7jvWhu8i4AG8X",
+    database: "defaultdb",
     connectionLimit: 10,
   });
   
