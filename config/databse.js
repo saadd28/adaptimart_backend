@@ -5,7 +5,7 @@ const pool = createPool({
     host: "http://adaptimartv1.cxegism0q4e1.eu-north-1.rds.amazonaws.com",
     user: "root",
     password: "12345678",
-    database: "adapti_mart_v1",
+    database: "adaptimartv1",
     connectionLimit: 10,
   });
   
